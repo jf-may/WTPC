@@ -35,7 +35,8 @@ PROGRAM DEBUG
   END DO
 
   C = 0.0
-  
+
+  ! Infinite loop repeatedly calling a routine that leaks memory.
   DO WHILE(1.eq.1)
      CALL mat_Tmat_mul( A, C )
   END DO
@@ -54,7 +55,11 @@ CONTAINS
     INTEGER :: i, j, k
     REAL*8, ALLOCATABLE, DIMENSION ( :, : ) :: A, C
     REAL*8, ALLOCATABLE, DIMENSION ( :, : ) :: temp
-    
+
+    ! temp is allocated every time the subroutine is called, but it is never
+    ! deallocated. Since the subroutine is executed inside an infinite loop,
+    ! memory consumption grows indefinitely.
+    ! Fix: add DEALLOCATE(temp) before the end of the subroutine.
     ALLOCATE( temp( SIZE, SIZE ) )
     
     DO i = 1, SIZE 

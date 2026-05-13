@@ -5,8 +5,7 @@
  * impements an inefficient version of a matrix multiplication such as
  * C = A * AT.  Where A, AT and C are square matrix of dimension SIZE
  * x SIZE.
- */ 
-
+ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -72,4 +71,3 @@ int main(int argc, char * argv[]){
 
   return 0;
 }
-  

@@ -20,7 +20,6 @@
 !
 ! Please, use the gdb on-line manual or publicly available documentation on web for details on gdb sintax.
 !
-! 
 
 PROGRAM DEBUG
 
@@ -42,6 +41,14 @@ PROGRAM DEBUG
 
   C = 0.0
 
+  ! mat_Tmat_mul expects:
+  ! (A, C, SIZE)
+  ! but SIZE is missing in this call.
+  ! Because there is no explicit interface, the compiler cannot detect the
+  ! error. The subroutine reads an invalid SIZE value from memory, which may
+  ! cause out-of-bounds accesses or SIGSEGV.
+  ! Fix:
+  ! CALL mat_Tmat_mul( A, C, SIZE )
   CALL mat_Tmat_mul( A, C )
 
   DEALLOCATE( A );
@@ -50,4 +57,3 @@ PROGRAM DEBUG
   STOP
 
 END PROGRAM DEBUG
-  

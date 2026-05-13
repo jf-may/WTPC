@@ -16,6 +16,10 @@ program test_oob
   enddo
 
   do i=1, last
+     ! If last > 10, accesses like a(11), a(12), ... are out of bounds.
+     ! Since a and b are stored in the same COMMON block, writing past the end
+     ! of a may overwrite values in b.
+     ! Fix: ensure last <= 10 before entering the loop.
      call set_val(a(i), 100.);
   enddo
 

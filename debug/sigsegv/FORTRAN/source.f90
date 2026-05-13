@@ -34,14 +34,31 @@ PROGRAM DEBUG
   ALLOCATE ( A( SIZE, SIZE ) )
   ALLOCATE ( C( SIZE, SIZE ) )
 
+  ! ALLOCATE return status is never checked.
+  ! If allocation fails, later accesses to A or C will cause undefined behavior.
+  ! Fix: verify allocation succeeded.
+
   DO j = 1, SIZE 
-     DO i = 1, SIZE 
+     DO i = 1, SIZE
+        ! Unlike the C version, j starts at 1, so there is no division by zero
+        ! here.
+        ! In fact, that may be why the bug exists in the C code. 
         A( i, j ) = REAL(i) / j
      END DO
   END DO
 
   C = 0.0
 
+  ! mat_Tmat_mul expects three arguments:
+  ! (A, C, SIZE)
+  ! but only two are passed here.
+  ! Since this is old-style FORTRAN without explicit interfaces, the compiler
+  ! does not detect the mismatch.
+  ! Inside the subroutine, SIZE is interpreted as matrix C and the real SIZE
+  ! argument becomes garbage memory. This can produce segmentation faults or
+  ! corrupted results.
+  ! Fix:
+  ! CALL mat_Tmat_mul( A, C, SIZE )
   CALL mat_Tmat_mul( A, SIZE )
 
   DEALLOCATE( A );
@@ -50,4 +67,3 @@ PROGRAM DEBUG
   STOP
 
 END PROGRAM DEBUG
-  

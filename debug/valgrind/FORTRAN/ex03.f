@@ -1,5 +1,9 @@
       include 'helper.f'
 
+      ! It doesn't actually relate to errors, but this entire language is an
+      ! error. GOD, how awful it looks. At least later versions of FORTRAN look
+      ! somewhat better
+
       program to_be_improved
       implicit none
       integer i,j,n,m
@@ -16,12 +20,20 @@
       call cpu_time(t1)
       DO I=1, 1010
          DO J=1, 1010
+           ! Array A has dimensions 1000x1000, but the loops go up to 1010.
+           ! Accesses like A(1001,1001) are out of bounds.
+           ! Since A and B are stored in the same COMMON block, this may
+           ! corrupt data inside B.
+           ! Fix: loop only up to n and m.
            A(I,J) = I + J
          ENDDO
       ENDDO
       sa=dasum(n*m,a,1)
       DO I=1, 1010
          DO J=1, 1010
+           ! While not actually being out of bounds like the array A, it is
+           ! still bad practice to harcode the indices, especially in this
+           ! program where we already have the parameters necessary for this. 
            B(I,J) = I - J
          ENDDO
       ENDDO

@@ -16,6 +16,10 @@ program test_oob
   read(*,*) last
 
   do i=1, last
+
+     ! A new array is allocated at every iteration, but never deallocated.
+     ! This produces a memory leak and rapidly increases memory consumption.
+     ! Fix: add DEALLOCATE(myvett) after using the array.
      allocate(myvett(dim))
 
      call set_val(a(1), dim, myvett);

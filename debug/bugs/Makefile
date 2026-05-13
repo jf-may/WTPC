@@ -1,15 +1,23 @@
-.PHONY: default help object executable all clean segfault dynamic static nobugs
+# These targets are not real files. Always execute them
+.PHONY: default help objects executable all clean segfault dynamic static nobugs
+# Defines the C compiler
 CC = gcc 
+# Flags to pass to the compiler
 CFLAGS = 
-
+# Defines the linker, defaulted to the compiler driver itself
 LD = $(CC)
 
+# Automatic source discovery
 SOURCE_C = $(wildcard *.c)
+# Object file name generation
 OBJECTS_C = $(patsubst %.c, %_c.o, $(SOURCE_C))
+# Executable file name generation
 EXECUTABLES = $(patsubst %.c, %.e, $(SOURCE_C))
 
+# Defines default target depending on all. make = make default = make all
 default: all
 
+# Defines make help
 help:
 	@echo "\
 Options:\n\n\
@@ -35,9 +43,15 @@ static: add_array_static.e
 
 nobugs: add_array_nobugs.e 
 
+# Pattern rule for compilation
+# Target(object): Dependencies(source)
 %_c.o: %.c
+# $^ = All dependencies
+# -c = Compile only, do not link. Produces object file.
+# $@ = Target name
 	$(CC) $(CFLAGS) -c $^ -o $@
 
+# Pattern rule for linking
 %.e: %_c.o
 	$(LD) $^ -o $@
 

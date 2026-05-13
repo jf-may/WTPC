@@ -21,6 +21,13 @@
 void mat_Tmat_mul( float * A, float * C ){
 
   int i, j, k;
+
+  // temp is allocated on the stack.
+  // For SIZE = 2500 this requires roughly: 2500 * 2500 * 4 bytes ~= 25 MB.
+  // This exceeds the default stack size limit on many Linux systems, causing
+  // a SIGSEGV (stack overflow).
+  // Temporary workaround: ulimit -s unlimited
+  // Proper fix: allocate temp dynamically with malloc/free.
   float temp[SIZE][SIZE];
 
   for (i = 0; i < SIZE; i++)
@@ -41,13 +48,21 @@ int main(int argc, char * argv[]){
   
   A = (float *) malloc(SIZE * SIZE * sizeof(float));
   C = (float *) malloc(SIZE * SIZE * sizeof(float));
-  
+
+  // malloc return values are not checked.
+  // If allocation fails, A or C become NULL and later accesses will cause
+  // undefined behavior or segmentation faults.
+  // Fix: verify A != NULL and C != NULL before use.
+  // TODO: Add this error to every malloc instance prior
+
   for (i = 0; i < SIZE; i++) {
     for (j = 0; j < SIZE; j++) {
+      // Division by zero when j == 0 produces inf, -inf or nan instead of
+      // crashing. Fix: handle j == 0 explicitly.
       A[(i * SIZE) + j] = ((float) i) / j;
     }
   }
-   
+
   memset(C, 0, SIZE * SIZE * sizeof(float));
   
   mat_Tmat_mul(A, C);

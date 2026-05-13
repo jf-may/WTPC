@@ -4,6 +4,7 @@ int add_array(int *a, int *b, int n){
   int sum = 0;
   int i = 0;
   for (i = 0; i < n; i++) {
+    // abs is an stdlib function, and it is not explicitely declared.
     sum += abs(a[i]);
     sum += abs(b[i]);
   };

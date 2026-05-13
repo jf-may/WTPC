@@ -27,6 +27,11 @@ void mat_Tmat_mul( float * A, float * C ){
   int i, j, k;
   float * temp;
 
+  // temp is allocated every time the function is called, but it is never freed.
+  // Since this function is called inside an infinite loop, memory usage grows
+  // indefinitely.
+  // Fix: add free(temp) before returning from the function.
+  // Valgrind detects this as memory blocks that are "definitely lost"
   temp = (float *) malloc( SIZE * SIZE * sizeof(float) );
 
   for( i = 0; i < SIZE; i++ )
@@ -48,6 +53,8 @@ int main( int argc, char * argv[] ){
   A = (float *) malloc( SIZE * SIZE * sizeof(float) );
   C = (float *) malloc( SIZE * SIZE * sizeof(float) );
   
+  // When j == 0 this performs a division by zero, which generates inf or
+  // nan values. Fix: handle the j == 0 case.
   for( i = 0; i < SIZE; i++ ){
     for( j = 0; j < SIZE; j++ ){
       A[ ( i * SIZE ) + j ] = ( (float) i ) / j;
@@ -55,7 +62,8 @@ int main( int argc, char * argv[] ){
   }
    
   memset( C, 0, SIZE * SIZE * sizeof(float) );
-  
+
+  // Infinite loop continuously calling a function that leaks memory.
   for(;;) mat_Tmat_mul( A, C );
   
   free( A );

@@ -15,8 +15,6 @@ void mysub(float **a, int dim)
     }
   
 }
-     
-
 
 int main(int argc, char *argv[])
 {
@@ -29,10 +27,15 @@ int main(int argc, char *argv[])
   scanf("%d",&last);
   for(i=0; i<last; i++)
     {
+      // Each iteration overwrites the previous pointer stored in a.
+      // The previously allocated block becomes unreachable, producing a
+      // memory leak. Fix: call free(a) before assigning a new allocation.
       mysub(&a, mydim);
     }
 
   printf("a = %f \n", a[0]);
 
+  // Final allocation is also never freed.
+  // Fix: add free(a) before exiting.
   return(EXIT_SUCCESS);
 }

@@ -21,7 +21,6 @@ mejor para debuggear?
 compilación, como `-Wall`. ¿Alguno les da alguna pista de por qué el
 programa se rompe?
 
-
 ## Floating point exception
 
 En la carpeta `fpe/` hay tres códigos de C, independientes, para
@@ -45,7 +44,6 @@ una carpeta, usen el flag `-Icarpeta` (sí, sin espacio en el medio).
 
 Otra nota: Para poder linkear `fpe_x87_sse.c` tienen que agregar la
 librería matemática `libm`, con `-lm`.
-
 
 ## Segmentation Fault
 
@@ -74,4 +72,3 @@ ejecutar con valgrind. Describan el error y por qué sucede
 En la carpeta `funny/` hay un código de C. Describan las diferencias
 de los ejecutables al compilar con y sin el flag `-DDEBUG`. ¿De dónde
 vienen esas diferencias?
-

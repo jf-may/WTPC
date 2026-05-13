@@ -4,6 +4,8 @@
 int add_array(int *a, int *b, int n){
   int sum = 0;
   int i = 0;
+  // Same error as add_array_static but now they were reserved using malloc,
+  // so it is out of bounds on the heap.
   for (i = 0; i <= n + 1; i++) {
     sum += abs(a[i]);
     sum += abs(b[i]);
@@ -23,5 +25,6 @@ int main(int argc, char **argv) {
   }
   sum = add_array(a, b, 3);
   printf("The addition is %d\n", sum);
+  // free(a) and free(b) missing
   return 0;
 }
